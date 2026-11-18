@@ -689,3 +689,72 @@ main.app { height: calc(100dvh - var(--header-height) - var(--bottom-bar-height)
   font-size: .82rem;
 }
 
+/* ================= PORTADA SIN BARRA INFERIOR ================= */
+:root {
+  --header-height: 0px;
+  --bottom-bar-height: 0px;
+}
+main.app {
+  height: 100dvh;
+}
+.logo-header,
+.menu-principal {
+  display: none !important;
+}
+#inicio.section {
+  padding-top: 10px;
+  padding-bottom: 18px;
+}
+.player-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 9px;
+}
+.player-brand img {
+  display: block;
+  width: min(42vw, 150px);
+  max-height: 35px;
+  object-fit: contain;
+  opacity: .96;
+}
+.home-section-heading {
+  align-items: center;
+  margin-top: 18px;
+}
+.heading-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 12px;
+  padding-right: 2px;
+}
+.heading-nav-btn {
+  display: grid;
+  place-items: center;
+  width: 37px;
+  height: 37px;
+  flex: 0 0 37px;
+  border: 1px solid rgba(213,166,74,.38);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #172638, #111c2a);
+  color: #edc779;
+  text-decoration: none;
+  font-size: .9rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.heading-nav-btn:active {
+  transform: scale(.94);
+}
+.heading-nav-btn.active {
+  border-color: rgba(237,199,121,.75);
+  background: rgba(213,166,74,.16);
+  color: #fff0c9;
+}
+@media (max-width: 380px) {
+  .heading-nav-actions { gap: 7px; }
+  .heading-nav-btn { width: 34px; height: 34px; flex-basis: 34px; }
+  .home-section-heading h3 { font-size: 1rem; }
+}
+
