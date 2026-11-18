@@ -128,7 +128,7 @@ function toSeconds(value) {
     if (value == null || value === "") return 0;
     if (typeof value === "number" && Number.isFinite(value)) return value;
     const raw = String(value).trim();
-    if (/^\d+(?:\\.\d+)?$/.test(raw)) return Number(raw);
+    if (/^\d+(?:\.\d+)?$/.test(raw)) return Number(raw);
     const parts = raw.split(":").map(Number);
     if (parts.some(part => !Number.isFinite(part))) return 0;
     return parts.reduce((total, part) => total * 60 + part, 0);
