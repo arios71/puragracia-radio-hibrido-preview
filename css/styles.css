@@ -541,7 +541,7 @@ main.app { height: calc(100dvh - var(--header-height) - var(--bottom-bar-height)
 .feature-copy small { color: #9ba9b8; font-size: .65rem; line-height: 1.35; }
 .feature-arrow { margin-left: auto; color: #8d9aaa; font-size: .7rem; }
 .home-footnote { padding: 16px 8px 4px; color: #9ba9b8; font-size: .72rem; line-height: 1.5; text-align: center; }
-.menu-principal { height: var(--bottom-bar-height); background: rgba(9,16,26,.97); border-top: 1px solid rgba(213,166,74,.18); padding: 0 18%; }
+.menu-principal { box-sizing: border-box; height: var(--bottom-bar-height); min-height: 62px; background: rgba(9,16,26,.97); border-top: 1px solid rgba(213,166,74,.18); padding: 0 18%; }
 .menu-item.active { color: var(--hybrid-gold-light); }
 @media (min-width: 700px) {
   #inicio.section { padding-top: 22px; }
