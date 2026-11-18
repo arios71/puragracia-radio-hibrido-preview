@@ -339,9 +339,13 @@ function openModal(program) {
   const body = modal.querySelector(".modal-body");
 
   const programInfo = programsMap[program.id];
+  // Resolver las carátulas dentro de la subruta de GitHub Pages.
+  const artworkUrl = programInfo?.artwork
+    ? new URL(programInfo.artwork.replace(/^\\/+/, ""), document.baseURI).href
+    : "";
 
   body.innerHTML = `
-    ${programInfo?.artwork ? `<img src="${programInfo.artwork}" class="modal-image" />` : ""}
+    ${artworkUrl ? `<img src="${artworkUrl}" class="modal-image" alt="Carátula de ${programInfo?.name || program.id}" />` : ""}
 
     <h2>${programInfo?.name || program.id}</h2>
 
