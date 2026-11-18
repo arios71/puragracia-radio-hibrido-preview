@@ -38,9 +38,12 @@
     try {
       const response = await fetch(url.href, { cache: 'no-cache' });
       if (!response.ok) throw new Error('No se pudo cargar el artículo');
+      const articleMarkup = await response.text();
+      const parsedArticle = new DOMParser().parseFromString(articleMarkup, 'text/html');
+      parsedArticle.querySelectorAll('a').forEach(link => link.replaceWith(...link.childNodes));
       readerView.innerHTML = `
         <button class="article-back" type="button"><i class="fas fa-arrow-left" aria-hidden="true"></i> Todos los artículos</button>
-        ${await response.text()}`;
+        ${parsedArticle.body.innerHTML}`;
       readerView.querySelector('.article-back')?.addEventListener('click', showList);
     } catch (error) {
       readerView.innerHTML = '<button class="article-back" type="button"><i class="fas fa-arrow-left"></i> Todos los artículos</button><p class="article-error">No fue posible cargar este artículo. Inténtalo nuevamente.</p>';
