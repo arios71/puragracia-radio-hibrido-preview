@@ -1,0 +1,148 @@
+name: Build independent hybrid preview
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hybrid-preview-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out preview repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy the approved hybrid branch
+        run: |
+          git clone --depth 1 --branch prueba-hibrido-pwa https://github.com/arios71/puragracia.com.git /tmp/source
+          rsync -a --delete --exclude='.git' --exclude='.github' --exclude='README.md' --exclude='CNAME' /tmp/source/ ./
+
+      - name: Adapt paths and PWA settings for GitHub Pages
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import json
+
+          root = Path(".")
+          preview = "https://arios71.github.io/puragracia-radio-hibrido-preview/"
+
+          for path in root.rglob("*"):
+              if not path.is_file() or ".git" in path.parts or ".github" in path.parts:
+                  continue
+              if path.suffix.lower() not in {".html", ".js", ".json", ".css", ".xml", ".txt"}:
+                  continue
+              try:
+                  text = path.read_text(encoding="utf-8")
+              except UnicodeDecodeError:
+                  continue
+
+              # Convert root-relative app assets to paths resolved from the app base.
+              replacements = {
+                  'href="/': 'href="./',
+                  "href='/": "href='./",
+                  'src="/': 'src="./',
+                  "src='/": "src='./",
+                  'fetch("/': 'fetch("./',
+                  "fetch('/": "fetch('./",
+                  ' = "/assets/': ' = "./assets/',
+                  " = '/assets/": " = './assets/",
+                  ' = "/data/': ' = "./data/',
+                  " = '/data/": " = './data/",
+                  ' = "/default-cover.png"': ' = "./default-cover.png"',
+                  " = '/default-cover.png'": " = './default-cover.png'",
+                  'replace("/#': 'replace("./#',
+                  "replace('/#": "replace('./#",
+                  "url: 'https://puragracia.com/'": f"url: '{preview}'",
+                  'url: "https://puragracia.com/"': f'url: "{preview}"',
+                  'https://puragracia.com/assets/icons/logo-512.png': preview + 'assets/icons/logo-512.png',
+                  'https://puragracia.com/': preview,
+              }
+              for old, new in replacements.items():
+                  text = text.replace(old, new)
+
+              if path.name == "index.html":
+                  if "<base " not in text:
+                      text = text.replace('<meta charset="UTF-8" />',
+                                          '<meta charset="UTF-8" />\n    <base href="/puragracia-radio-hibrido-preview/" />', 1)
+                  text = text.replace('href="./manifest.json"', 'href="./manifest.json"')
+                  # Keep the test PWA from claiming the official site's canonical URL.
+                  text = text.replace('<link rel="canonical" href="' + preview + '" />', '')
+                  text = text.replace("navigator.serviceWorker.register('/sw.js')",
+                                      "navigator.serviceWorker.register('./sw.js')")
+
+              if path.name == "manifest.json":
+                  data = json.loads(text)
+                  data["id"] = "./"
+                  data["start_url"] = "./"
+                  data["scope"] = "./"
+                  for icon in data.get("icons", []):
+                      icon["src"] = icon["src"].lstrip("/")
+                  text = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
+
+              if path.name == "sw.js":
+                  text = """const CACHE_NAME = 'pgr-hybrid-preview-v1';
+          const APP_BASE = self.registration.scope;
+          const STATIC_PATHS = [
+            './', './index.html', './css/styles.css', './js/radio.js',
+            './js/menu.js', './js/nowplaying.js', './js/schedule.js',
+            './js/sermones.js', './manifest.json', './assets/icons/logo-32.png',
+            './assets/icons/logo-192.png', './assets/icons/logo-512.png',
+            './assets/icons/icon-maskable-512.png', './assets/icons/apple-touch-icon.png',
+            './assets/icons/whatsapp.png'
+          ];
+          const STATIC_ASSETS = STATIC_PATHS.map(path => new URL(path, APP_BASE).href);
+          self.addEventListener('install', event => {
+            self.skipWaiting();
+            event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS)));
+          });
+          self.addEventListener('activate', event => {
+            event.waitUntil(caches.keys().then(keys => Promise.all(
+              keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+            )).then(() => self.clients.claim()));
+          });
+          self.addEventListener('fetch', event => {
+            const url = new URL(event.request.url);
+            if (url.hostname.includes('streamtheworld.com') ||
+                /\\.(mp3|aac|m3u8)(?:$|\\?)/i.test(url.pathname)) return;
+            if (event.request.mode === 'navigate') {
+              event.respondWith(fetch(event.request).catch(() => caches.match(new URL('index.html', APP_BASE))));
+              return;
+            }
+            if (url.origin !== self.location.origin || !url.href.startsWith(APP_BASE)) return;
+            event.respondWith(caches.match(event.request).then(cached =>
+              cached || fetch(event.request).then(response => {
+                if (event.request.method === 'GET' && response.ok) {
+                  const copy = response.clone();
+                  caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+                }
+                return response;
+              })
+            ));
+          });
+          """
+
+              path.write_text(text, encoding="utf-8")
+
+          # The manifest and service worker are intentionally isolated to this Pages subpath.
+          PY
+
+      - name: Commit synchronized preview
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Sync hybrid PWA into standalone preview"
+            git push
+          fi
