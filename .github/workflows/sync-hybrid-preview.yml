@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: hybrid-preview-sync
@@ -145,3 +147,22 @@ jobs:
             git commit -m "Sync hybrid PWA into standalone preview"
             git push
           fi
+
+      - name: Enable and configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Prepare static site artifact
+        run: |
+          mkdir -p /tmp/pages-site
+          rsync -a --delete --exclude='.git' --exclude='.github' --exclude='README.md' ./ /tmp/pages-site/
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: /tmp/pages-site
+
+      - name: Deploy independent hybrid preview
+        id: deployment
+        uses: actions/deploy-pages@v4
