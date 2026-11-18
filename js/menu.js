@@ -1,6 +1,6 @@
 // Navegación del menú
 
-const menuLinks = document.querySelectorAll('nav a[data-section]');
+const menuLinks = document.querySelectorAll('.heading-nav-btn[data-section]');
 const sectionLinks = document.querySelectorAll('[data-section]');
 
 sectionLinks.forEach(link => {
@@ -20,8 +20,8 @@ sectionLinks.forEach(link => {
 
     // Mantener activa la opción de navegación principal correspondiente.
     menuLinks.forEach(l => l.classList.remove('active'));
-    const navTarget = document.querySelector(`nav a[data-section="${target}"]`);
-    const fallbackNav = document.querySelector('nav a[data-section="inicio"]');
+    const navTarget = document.querySelector(`.heading-nav-btn[data-section="${target}"]`);
+    const fallbackNav = document.querySelector('.heading-nav-btn[data-section="inicio"]');
     (navTarget || fallbackNav)?.classList.add('active');
 
     // 🔥 Actualizar URL
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (activeSection) activeSection.classList.add('active');
 
   menuLinks.forEach(l => l.classList.remove('active'));
-  const activeLink = document.querySelector(`nav a[data-section="${hash}"]`);
-  const fallbackLink = document.querySelector('nav a[data-section="inicio"]');
+  const activeLink = document.querySelector(`.heading-nav-btn[data-section="${hash}"]`);
+  const fallbackLink = document.querySelector('.heading-nav-btn[data-section="inicio"]');
   (activeLink || fallbackLink)?.classList.add('active');
 });
