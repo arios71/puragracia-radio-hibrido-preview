@@ -113,6 +113,10 @@ function updateNowPlaying(metadata) {
             <div class="np-line artist ${isSlogan ? "slogan-text" : ""}">${artist}</div>
             ${album ? `<div class="np-line album">${album}</div>` : ""}
         </div>
+        <div class="track-progress" id="trackProgress" hidden>
+            <div class="track-progress-times"><span id="trackElapsed">0:00</span><span id="trackRemaining">-0:00</span></div>
+            <div class="track-progress-track"><div class="track-progress-fill" id="trackProgressFill"></div></div>
+        </div>
     `;
 
     if ("mediaSession" in navigator && "MediaMetadata" in window) {
