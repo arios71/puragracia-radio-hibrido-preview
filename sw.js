@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pgr-hybrid-preview-v9';
+const CACHE_NAME = 'pgr-hybrid-preview-v10';
 const APP_BASE = self.registration.scope;
 const STATIC_PATHS = [
   './', './index.html', './css/styles.css', './js/radio.js',
