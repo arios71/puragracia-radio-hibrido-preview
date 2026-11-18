@@ -9,7 +9,7 @@ const SLOGAN = "Música y contenido en sintonía con el evangelio de Cristo";
 const NOWPLAYING_URL = "https://puragracia-radio-preview-vercel-pre.vercel.app/api/radioboss-nowplaying";
 let currentTrack = null;
 let programsList = [];
-let lastActiveProgram = null;
+let lastActiveProgram = null;\nlet progressTimer = null;\nlet progressTrackId = "";\nlet progressPosition = 0;\nlet progressDuration = 0;\nlet progressUpdatedAt = 0;
 
 const asText = value => typeof value === "string" ? value.trim() : (value == null ? "" : String(value).trim());
 
@@ -118,14 +118,62 @@ function updateNowPlaying(metadata) {
     }
 }
 
-async function fetchNowPlaying() {
+
+function toSeconds(value) {
+    if (value == null || value === "") return 0;
+    if (typeof value === "number" && Number.isFinite(value)) return value;
+    const raw = String(value).trim();
+    if (/^\\d+(?:\\.\\d+)?$/.test(raw)) return Number(raw);
+    const parts = raw.split(":").map(Number);
+    if (parts.some(part => !Number.isFinite(part))) return 0;
+    return parts.reduce((total, part) => total * 60 + part, 0);
+}
+function formatClock(seconds) {
+    const value = Math.max(0, Math.floor(seconds));
+    const hours = Math.floor(value / 3600);
+    const minutes = Math.floor((value % 3600) / 60);
+    const secs = value % 60;
+    return hours ? `${hours}:${String(minutes).padStart(2,"0")}:${String(secs).padStart(2,"0")}` : `${minutes}:${String(secs).padStart(2,"0")}`;
+}
+function updateTrackProgress(metadata) {
+    const duration = toSeconds(metadata?.len ?? metadata?.duration ?? metadata?.length);
+    const position = toSeconds(metadata?.pos ?? metadata?.position ?? metadata?.elapsed);
+    const panel = document.getElementById("trackProgress");
+    if (!panel) return;
+    if (!(duration > 0) || !Number.isFinite(duration)) {
+        panel.hidden = true;
+        progressDuration = 0;
+        return;
+    }
+    const trackId = `${metadata?.title || ""}|${metadata?.artist || ""}|${duration}`;
+    if (trackId !== progressTrackId) progressTrackId = trackId;
+    progressDuration = duration;
+    progressPosition = Math.min(position, duration);
+    progressUpdatedAt = Date.now();
+    panel.hidden = false;
+    renderTrackProgress();
+    if (!progressTimer) progressTimer = setInterval(renderTrackProgress, 1000);
+}
+function renderTrackProgress() {
+    const panel = document.getElementById("trackProgress");
+    if (!panel || panel.hidden || !(progressDuration > 0)) return;
+    const elapsed = Math.min(progressDuration, progressPosition + Math.max(0, (Date.now() - progressUpdatedAt) / 1000));
+    const remaining = Math.max(0, progressDuration - elapsed);
+    const fill = document.getElementById("trackProgressFill");
+    const left = document.getElementById("trackElapsed");
+    const right = document.getElementById("trackRemaining");
+    if (fill) fill.style.width = `${Math.min(100, elapsed / progressDuration * 100)}%`;
+    if (left) left.textContent = formatClock(elapsed);
+    if (right) right.textContent = `-${formatClock(remaining)}`;
+}
+\nasync function fetchNowPlaying() {
     try {
         const res = await fetch(`${NOWPLAYING_URL}?cb=${Date.now()}`, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         const metadata = data?.nowPlaying || data?.data?.nowPlaying || data?.data || data;
         if (!metadata || typeof metadata !== "object") throw new Error("Respuesta de metadata vacía");
-        updateNowPlaying(metadata);
+        updateNowPlaying(metadata);\n        updateTrackProgress(metadata);
     } catch (err) {
         console.error("No se pudo obtener metadata de RadioBOSS:", err);
         updateNowPlaying({ title: "Pura Gracia Radio" });
