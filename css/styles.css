@@ -758,3 +758,36 @@ main.app {
   .home-section-heading h3 { font-size: 1rem; }
 }
 
+
+
+/* ================= BOTÓN FLOTANTE PARA REGRESAR A INICIO ================= */
+.floating-home-btn {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(22px, env(safe-area-inset-bottom));
+  z-index: 1500;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(237,199,121,.72);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #24364a, #111c2a);
+  color: #edc779;
+  font-size: 1.1rem;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,.42), 0 0 0 4px rgba(213,166,74,.08);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity .2s, visibility .2s, transform .2s, background .2s;
+}
+.floating-home-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.floating-home-btn:active { transform: scale(.94); }
+#programacion.section, #articulos.section, #contacto.section { padding-bottom: 88px; }
