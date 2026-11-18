@@ -614,3 +614,27 @@ main.app { height: calc(100dvh - var(--header-height) - var(--bottom-bar-height)
 .home-social-links i { font-size: .9rem; color: var(--hybrid-gold-light); }
 /* WRPG-DB bajo el logo: mismo dorado del botón de reproducción */
 .home-kicker { color: #edc779; }
+
+
+/* Ajustes de proporción del reproductor en la portada */
+.player-panel {
+  box-sizing: border-box;
+  width: calc(100% - 12px);
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 14px 14px 12px;
+}
+#nowPlayingBox .now-card img {
+  width: min(60vw, 240px);
+  height: min(60vw, 240px);
+}
+.live-controls {
+  margin-top: 14px;
+  padding-top: 12px;
+}
+#playRadio {
+  flex-basis: 52px;
+  width: 52px;
+  height: 52px;
+}
+#playRadio svg { width: 26px; height: 26px; }
