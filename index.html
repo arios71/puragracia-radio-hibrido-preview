@@ -64,21 +64,13 @@
 </head>
 <body>
 
-    <header class="logo-header">
-        <img src="./assets/branding/logo-horizontal.webp" alt="Pura Gracia Radio" />
-        
-        <!-- Botón discreto de instalación -->
-        <button id="installTrigger" aria-label="Instalar App" style="display:none;">
-            <i class="fas fa-download"></i>
-        </button>
-    </header>
-
     <main class="app">
     <h1 class="sr-only">Pura Gracia Radio - Radio Cristiana Online 24/7</h1>
 
     <section id="inicio" class="section active">
     <div class="home-shell">
         <div class="player-panel">
+            <div class="player-brand"><img src="./assets/branding/logo-horizontal.webp" alt="Pura Gracia Radio" /></div>
             <div class="player-panel-heading">
                 <span>AHORA EN LA RADIO</span><span class="on-air-mark"><i></i> EN VIVO</span>
             </div>
@@ -97,6 +89,10 @@
         </div>
         <div class="home-section-heading">
             <div><span>DESCUBRE</span><h3>Explora Pura Gracia</h3></div>
+            <div class="heading-nav-actions" aria-label="Navegación principal">
+                <a href="#inicio" data-section="inicio" class="heading-nav-btn active" aria-label="Inicio" title="Inicio"><i class="fas fa-house"></i></a>
+                <a href="#contacto" data-section="contacto" class="heading-nav-btn" aria-label="Contacto" title="Contacto"><i class="fas fa-envelope"></i></a>
+            </div>
         </div>
         <div class="home-feature-grid">
             <a href="#programacion" data-section="programacion" class="home-feature home-feature-compact">
@@ -212,17 +208,6 @@
 </section>
 
     </main>
-
-    <nav class="menu-principal">
-  <a href="#" data-section="inicio" class="menu-item active">
-    <i class="fas fa-home"></i>
-    <span>Inicio</span>
-  </a>
-  <a href="#" data-section="contacto" class="menu-item">
-    <i class="fas fa-envelope"></i>
-    <span>Contacto</span>
-  </a>
-</nav>
 
     <script src="./js/schedule.js"></script>
     <script src="./js/radio.js"></script>
