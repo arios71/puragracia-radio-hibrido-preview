@@ -24,6 +24,9 @@ sectionLinks.forEach(link => {
     const fallbackNav = document.querySelector('.heading-nav-btn[data-section="inicio"]');
     (navTarget || fallbackNav)?.classList.add('active');
 
+    // Mostrar acceso flotante a Inicio solamente fuera de la portada.
+    document.getElementById('floatingHomeButton')?.classList.toggle('visible', target !== 'inicio');
+
     // 🔥 Actualizar URL
     window.location.hash = target;
   });
@@ -44,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const activeSection = document.getElementById(hash);
   if (activeSection) activeSection.classList.add('active');
+  document.getElementById('floatingHomeButton')?.classList.toggle('visible', hash !== 'inicio');
 
   menuLinks.forEach(l => l.classList.remove('active'));
   const activeLink = document.querySelector(`.heading-nav-btn[data-section="${hash}"]`);
