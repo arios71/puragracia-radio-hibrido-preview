@@ -981,8 +981,8 @@ main.app {
   margin-bottom: 4px;
 }
 #inicio .player-brand img {
-  width: min(36vw, 132px);
-  max-height: 27px;
+  width: min(43vw, 158px);
+  max-height: 33px;
 }
 #inicio #nowPlayingBox .now-card {
   display: flex;
