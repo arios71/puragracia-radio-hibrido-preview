@@ -1100,7 +1100,10 @@ main.app {
     height: clamp(125px, 23dvh, 150px);
   }
   #inicio .player-panel { padding: 6px 10px 7px; }
-  #inicio .player-brand img { max-height: 23px; }
+  #inicio .player-brand img {
+    width: min(48vw, 175px);
+    max-height: 36px;
+  }
   #inicio .home-section-heading { margin-top: 7px; margin-bottom: 5px; }
   #inicio .home-feature-grid { grid-template-rows: repeat(3, minmax(40px, auto)); gap: 5px; }
   #inicio .home-feature-social { padding: 6px; row-gap: 4px; }
