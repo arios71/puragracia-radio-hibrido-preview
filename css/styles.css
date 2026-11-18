@@ -612,3 +612,5 @@ main.app { height: calc(100dvh - var(--header-height) - var(--bottom-bar-height)
   outline: none;
 }
 .home-social-links i { font-size: .9rem; color: var(--hybrid-gold-light); }
+/* WRPG-DB bajo el logo: mismo dorado del botón de reproducción */
+.home-kicker { color: #edc779; }
