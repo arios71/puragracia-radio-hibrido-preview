@@ -570,3 +570,45 @@ main.app { height: calc(100dvh - var(--header-height) - var(--bottom-bar-height)
 .articles-empty i { display: block; color: var(--hybrid-gold-light); font-size: 1.6rem; margin-bottom: 12px; }
 .articles-empty p { font-size: .88rem; line-height: 1.5; }
 @media (max-height: 740px) { .home-intro { padding-bottom: 8px; } }
+
+/* ================= REDES SOCIALES EN HOME ================= */
+.home-feature-social {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-content: start;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 12px;
+}
+.home-feature-social .feature-icon { grid-column: 1; grid-row: 1; }
+.home-feature-social .feature-copy { grid-column: 2; grid-row: 1; }
+.home-social-links {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+.home-social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 9px 6px;
+  border: 1px solid rgba(213,166,74,.2);
+  border-radius: 10px;
+  background: rgba(255,255,255,.035);
+  color: #dce3eb;
+  text-decoration: none;
+  font-size: .68rem;
+  font-weight: 600;
+  transition: background .2s, border-color .2s;
+}
+.home-social-links a:hover,
+.home-social-links a:focus-visible {
+  background: rgba(213,166,74,.1);
+  border-color: rgba(213,166,74,.5);
+  outline: none;
+}
+.home-social-links i { font-size: .9rem; color: var(--hybrid-gold-light); }
