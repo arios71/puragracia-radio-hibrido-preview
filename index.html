@@ -163,10 +163,10 @@
                     <h2>Artículos</h2>
                     <p>Reflexiones y contenido para edificar tu fe.</p>
                 </div>
-                <div class="articles-empty">
-                    <i class="fas fa-newspaper" aria-hidden="true"></i>
-                    <p>Estamos preparando este espacio para compartir nuevos artículos.</p>
+                <div id="articleListView" class="article-list-view">
+                    <p class="article-loading">Cargando artículos…</p>
                 </div>
+                <div id="articleReaderView" class="article-reader-view" hidden></div>
             </div>
         </section>
 
@@ -218,6 +218,7 @@
     <script src="./js/menu.js"></script>
     <script src="./js/nowplaying.js"></script>
     <script src="./js/sermones.js"></script>
+    <script src="./js/articles.js"></script>
 
     <script>
       if ('serviceWorker' in navigator) {
