@@ -69,11 +69,10 @@ jobs:
               for old, new in replacements.items():
                   text = text.replace(old, new)
 
+              if path.suffix.lower() == ".html" and "<base " not in text:
+                  text = text.replace("<head>", '<head>\\n    <base href="/puragracia-radio-hibrido-preview/">', 1)
+
               if path.name == "index.html":
-                  if "<base " not in text:
-                      text = text.replace('<meta charset="UTF-8" />',
-                                          '<meta charset="UTF-8" />\n    <base href="/puragracia-radio-hibrido-preview/" />', 1)
-                  text = text.replace('href="./manifest.json"', 'href="./manifest.json"')
                   # Keep the test PWA from claiming the official site's canonical URL.
                   text = text.replace('<link rel="canonical" href="' + preview + '" />', '')
                   text = text.replace("navigator.serviceWorker.register('/sw.js')",
