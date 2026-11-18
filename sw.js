@@ -1,9 +1,9 @@
-const CACHE_NAME = 'pgr-hybrid-preview-v10';
+const CACHE_NAME = 'pgr-hybrid-preview-v11';
 const APP_BASE = self.registration.scope;
 const STATIC_PATHS = [
   './', './index.html', './css/styles.css', './js/radio.js',
   './js/menu.js', './js/nowplaying.js', './js/schedule.js',
-  './js/sermones.js', './manifest.json', './assets/icons/logo-32.png',
+  './js/sermones.js', './js/articles.js', './data/articles.json', './manifest.json', './assets/icons/logo-32.png',
   './assets/icons/logo-192.png', './assets/icons/logo-512.png',
   './assets/icons/icon-maskable-512.png', './assets/icons/apple-touch-icon.png',
   './assets/icons/whatsapp.png'
