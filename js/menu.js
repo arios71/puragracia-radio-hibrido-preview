@@ -18,11 +18,9 @@ sectionLinks.forEach(link => {
     const section = document.getElementById(target);
     if (section) section.classList.add('active');
 
-    // Mantener activa la opción de navegación principal correspondiente.
+    // Marcar link activo
     menuLinks.forEach(l => l.classList.remove('active'));
-    const navTarget = document.querySelector(`nav a[data-section="${target}"]`);
-    const fallbackNav = document.querySelector('nav a[data-section="inicio"]');
-    (navTarget || fallbackNav)?.classList.add('active');
+    link.classList.add('active');
 
     // 🔥 Actualizar URL
     window.location.hash = target;
@@ -47,6 +45,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   menuLinks.forEach(l => l.classList.remove('active'));
   const activeLink = document.querySelector(`nav a[data-section="${hash}"]`);
-  const fallbackLink = document.querySelector('nav a[data-section="inicio"]');
-  (activeLink || fallbackLink)?.classList.add('active');
+  if (activeLink) activeLink.classList.add('active');
 });
