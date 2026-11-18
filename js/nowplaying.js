@@ -9,7 +9,12 @@ const SLOGAN = "Música y contenido en sintonía con el evangelio de Cristo";
 const NOWPLAYING_URL = "https://puragracia-radio-preview-vercel-pre.vercel.app/api/radioboss-nowplaying";
 let currentTrack = null;
 let programsList = [];
-let lastActiveProgram = null;\nlet progressTimer = null;\nlet progressTrackId = "";\nlet progressPosition = 0;\nlet progressDuration = 0;\nlet progressUpdatedAt = 0;
+let lastActiveProgram = null;
+let progressTimer = null;
+let progressTrackId = "";
+let progressPosition = 0;
+let progressDuration = 0;
+let progressUpdatedAt = 0;
 
 const asText = value => typeof value === "string" ? value.trim() : (value == null ? "" : String(value).trim());
 
@@ -123,7 +128,7 @@ function toSeconds(value) {
     if (value == null || value === "") return 0;
     if (typeof value === "number" && Number.isFinite(value)) return value;
     const raw = String(value).trim();
-    if (/^\\d+(?:\\.\\d+)?$/.test(raw)) return Number(raw);
+    if (/^\d+(?:\\.\d+)?$/.test(raw)) return Number(raw);
     const parts = raw.split(":").map(Number);
     if (parts.some(part => !Number.isFinite(part))) return 0;
     return parts.reduce((total, part) => total * 60 + part, 0);
@@ -166,14 +171,16 @@ function renderTrackProgress() {
     if (left) left.textContent = formatClock(elapsed);
     if (right) right.textContent = `-${formatClock(remaining)}`;
 }
-\nasync function fetchNowPlaying() {
+
+async function fetchNowPlaying() {
     try {
         const res = await fetch(`${NOWPLAYING_URL}?cb=${Date.now()}`, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         const metadata = data?.nowPlaying || data?.data?.nowPlaying || data?.data || data;
         if (!metadata || typeof metadata !== "object") throw new Error("Respuesta de metadata vacía");
-        updateNowPlaying(metadata);\n        updateTrackProgress(metadata);
+        updateNowPlaying(metadata);
+        updateTrackProgress(metadata);
     } catch (err) {
         console.error("No se pudo obtener metadata de RadioBOSS:", err);
         updateNowPlaying({ title: "Pura Gracia Radio" });
